@@ -1,5 +1,5 @@
-# PlausibleReverseProxy
-Reverse proxy for Plausible Analytics, written in PHP for Shared-Hosting on Apache.
+# Reverse proxy for Plausible Analytics
+Written in PHP for Shared-Hosting on Apache.
 
 ## Installation
 
