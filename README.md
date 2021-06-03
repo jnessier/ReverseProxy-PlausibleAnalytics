@@ -14,7 +14,7 @@ Written in PHP for Shared-Hosting on Apache.
 <script defer data-domain="example.com" src="//stats.example.com/js/script.js"></script>
 ```
 
-### Running in a subfolder of a domain
+### Running in a subfolder of a website
 
 2. Move `.htaccess`, `index.php` and `options.php` into the subfolder of your website (e.g. `example.com/stats`).
 3. **Optional** Customize the `options.php`.
