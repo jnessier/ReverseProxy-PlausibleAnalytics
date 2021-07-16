@@ -7,6 +7,7 @@ $relativeUri = '/stats';
 // Set all allowed URI which should be accessible trough the proxy
 $whitelist = [
     '/js/script.js',
+    '/js/plausible.outbound-links.js',
     '/api/event'
 ];
 
