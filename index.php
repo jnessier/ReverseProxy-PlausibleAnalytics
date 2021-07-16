@@ -3,16 +3,21 @@
 include 'options.php';
 
 $requestUri = str_replace($relativeUri, '', $_SERVER['REQUEST_URI']);
+$requestUriPath = parse_url($requestUri, PHP_URL_PATH);
 
 $code = 404;
 $content = 'Not found';
 
-if (in_array($requestUri, $whitelist)) {
+if (in_array($requestUriPath, $whitelist)) {
 
     $url = $backendUrl . $requestUri;
 
-    if (array_key_exists($requestUri, $mapping)) {
-        $url = $backendUrl . $mapping[$requestUri];
+    if (array_key_exists($requestUriPath, $mapping)) {
+        $url = $backendUrl . str_replace(
+            $requestUriPath,
+            $mapping[$requestUriPath],
+            $requestUri
+        );
     }
 
     $ch = curl_init($url);
