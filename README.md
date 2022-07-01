@@ -30,7 +30,7 @@ Written in PHP for Shared-Hosting on Apache.
 // If your proxy runs under https://example.com/stats, then set /stats as relative URI and otherwise just leave the string blank.
 $relativeUri = '/stats';
 
-// Set all allowed URI which should be accessible trough the proxy
+// Set all allowed URI which should be accessible through the proxy
 $whitelist = [
     '/js/script.js',
     '/js/plausible.outbound-links.js',
@@ -41,6 +41,13 @@ $whitelist = [
 // If not needed then leave the array empty.
 $mapping = [
     '/foo/bar.js' => '/js/plausible.outbound-links.js'
+];
+
+// Set visitor IP addresses as exclusion (e.g. for yourself or developers)
+// If not needed then leave the array empty.
+$excluded = [
+    '127.0.0.1',
+    '::1',
 ];
 
 // Set URL of Plausible Analytics

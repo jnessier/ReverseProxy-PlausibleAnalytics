@@ -1,6 +1,6 @@
 <?php
 
-include 'options.php';
+require_once 'options.php';
 
 $requestUri = str_replace($relativeUri, '', $_SERVER['REQUEST_URI']);
 $requestUriPath = parse_url($requestUri, PHP_URL_PATH);
@@ -10,14 +10,17 @@ $content = 'Not found';
 
 if (in_array($requestUriPath, $whitelist)) {
 
+    $code = 403;
+    $content = 'Forbidden';
+
     $url = $backendUrl . $requestUri;
 
     if (array_key_exists($requestUriPath, $mapping)) {
         $url = $backendUrl . str_replace(
-            $requestUriPath,
-            $mapping[$requestUriPath],
-            $requestUri
-        );
+                $requestUriPath,
+                $mapping[$requestUriPath],
+                $requestUri
+            );
     }
 
     $ch = curl_init($url);
@@ -37,26 +40,29 @@ if (in_array($requestUriPath, $whitelist)) {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
 
-    $headers['X-Forwarded-For'] = 'X-Forwarded-For: ' . $ip;
+    if (!in_array($ip, $excluded)) {
 
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_HEADER, false);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $headers['X-Forwarded-For'] = 'X-Forwarded-For: ' . $ip;
 
-    if (strtolower($_SERVER['REQUEST_METHOD']) === 'post') {
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents('php://input'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        if (strtolower($_SERVER['REQUEST_METHOD']) === 'post') {
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents('php://input'));
+        }
+
+        $content = curl_exec($ch);
+
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+
+        curl_close($ch);
     }
-
-    $content = curl_exec($ch);
-
-    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-
-    curl_close($ch);
 }
 
 http_response_code($code);
