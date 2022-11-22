@@ -55,7 +55,7 @@ $backendUrl = "https://plausible.io";
 ```
 
 ## Contributors
-* Jonathan Nessier (@rjgamer), [Neoflow](https://www.neoflow.ch)
+* Jonathan Nessier (@YogurtRocks), [Neoflow](https://www.neoflow.ch)
 * David Mondok (@davidmondok)
 
 If you would like to see this reverse proxy for Plausible Analytics develop further, or if you want to support me or show me your appreciation, please
