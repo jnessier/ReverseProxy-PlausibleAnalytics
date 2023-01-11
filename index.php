@@ -7,6 +7,7 @@ $requestUriPath = parse_url($requestUri, PHP_URL_PATH);
 
 $code = 404;
 $content = 'Not found';
+$response_headers = [];
 
 if (in_array($requestUriPath, $whitelist)) {
 
@@ -24,10 +25,9 @@ if (in_array($requestUriPath, $whitelist)) {
     }
 
     $ch = curl_init($url);
-    $headers = [];
 
     foreach (getallheaders() as $key => $value) {
-        if (!in_array($key, ['Host', 'Accept-Encoding', 'X-Forwarded-For', 'Client-IP'])) {
+        if (!in_array(strtolower($key), ['host', 'accept-encoding', 'x-forwarded-for', 'client-ip'])) {
             $headers[$key] = $key . ': ' . $value;
         }
     }
@@ -46,7 +46,7 @@ if (in_array($requestUriPath, $whitelist)) {
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -56,22 +56,29 @@ if (in_array($requestUriPath, $whitelist)) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents('php://input'));
         }
 
-        $content = curl_exec($ch);
+        $response = curl_exec($ch);
+
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        foreach(explode("\r\n", substr($response, 0, $header_size)) as $header) {
+            $header = explode(":", $header, 2);
+            if (count($header) == 2) {
+                $response_headers[strtolower(rtrim($header[0]))] = ltrim($header[1]);
+            }
+        }
+
+        $content = substr($response, $header_size);
 
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-
         curl_close($ch);
     }
 }
 
 http_response_code($code);
 
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Credentials: true');
-
-if (isset($contentType)) {
-    header('content-type: ' . $contentType);
+foreach($response_headers as $key => $value) {
+    if (in_array($key, ['content-type', 'content-length', 'vary', 'access-control-allow-origin', 'access-control-allow-credentials', 'cache-control', 'application','cross-origin-resource-policy', 'permissions-policy', 'x-content-type-options'])) {
+        header($key . ': ' . $value);
+    }
 }
 
 echo $content;
