@@ -1,24 +1,27 @@
 # Reverse proxy for Plausible Analytics
-Written in PHP for Shared-Hosting on Apache.
+
+Written in PHP for shared hosting on Apache.
 
 ## Installation
 
-1. Manually download the latest release from [here](https://github.com/Neoflow/ReverseProxy-PlausibleAnalytics/releases/).
+gmg   from [here](https://github.com/Neoflow/ReverseProxy-PlausibleAnalytics/releases/).
 
 ### Running in the root of a domain or subdomain
 
 2. Move `.htaccess`, `index.php` and `options.php` into the root of your domain or subdomain (e.g. `stats.example.com`).
 3. **Optional** Customize the `options.php`.
 4. Add the script like in the following example and customize the attributes.
+
 ```html
 <script defer data-domain="example.com" src="//stats.example.com/js/script.js"></script>
 ```
 
-### Running in a subfolder of a website
+### Running in a sub folder of a website
 
-2. Move `.htaccess`, `index.php` and `options.php` into the subfolder of your website (e.g. `example.com/stats`).
+2. Move `.htaccess`, `index.php` and `options.php` into the sub folder of your website (e.g. `example.com/stats`).
 3. **Optional** Customize the `options.php`.
 4. Add the script like in the following example and customize the attributes.
+
 ```html
 <script defer data-domain="example.com" data-api="/stats/api/event" src="/stats/js/script.js"></script>
 ```
@@ -55,16 +58,19 @@ $backendUrl = "https://plausible.io";
 ```
 
 ## Contributors
+
 * Jonathan Nessier, [Neoflow](https://www.neoflow.ch)
 * David Mondok
 * Julien Tessier, [Utile](https://www.utile.co)
 
-If you would like to see this reverse proxy for Plausible Analytics develop further, or if you want to support me or show me your appreciation, please
+If you would like to see this reverse proxy for Plausible Analytics develop further, or if you want to support me or
+show me your appreciation, please
 donate any amount through PayPal. Thank you! :beers:
 
 [![Donate](https://img.shields.io/badge/Donate-paypal-blue)](https://www.paypal.me/JonathanNessier)
 
 ## License
+
 Licensed under [MIT](LICENSE).
 
 *Made in Switzerland with :cheese: and :heart:*
