@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @var string $relativeUri
+ * @var array $whitelist
+ * @var array $mapping
+ * @var array $excluded
+ * @var string $backendUrl
+ */
+
 require_once 'options.php';
 
 $requestUri = str_replace($relativeUri, '', $_SERVER['REQUEST_URI']);
@@ -7,10 +15,9 @@ $requestUriPath = parse_url($requestUri, PHP_URL_PATH);
 
 $code = 404;
 $content = 'Not found';
-$response_headers = [];
+$responseHeaders = [];
 
 if (in_array($requestUriPath, $whitelist)) {
-
     $code = 403;
     $content = 'Forbidden';
 
@@ -41,7 +48,6 @@ if (in_array($requestUriPath, $whitelist)) {
     }
 
     if (!in_array($ip, $excluded)) {
-
         $headers['X-Forwarded-For'] = 'X-Forwarded-For: ' . $ip;
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -58,15 +64,15 @@ if (in_array($requestUriPath, $whitelist)) {
 
         $response = curl_exec($ch);
 
-        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        foreach(explode("\r\n", substr($response, 0, $header_size)) as $header) {
-            $header = explode(":", $header, 2);
+        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        foreach (explode("\r\n", substr($response, 0, $headerSize)) as $header) {
+            $header = explode(':', $header, 2);
             if (count($header) == 2) {
-                $response_headers[strtolower(rtrim($header[0]))] = ltrim($header[1]);
+                $responseHeaders[strtolower(rtrim($header[0]))] = ltrim($header[1]);
             }
         }
 
-        $content = substr($response, $header_size);
+        $content = substr($response, $headerSize);
 
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
@@ -75,8 +81,19 @@ if (in_array($requestUriPath, $whitelist)) {
 
 http_response_code($code);
 
-foreach($response_headers as $key => $value) {
-    if (in_array($key, ['content-type', 'content-length', 'vary', 'access-control-allow-origin', 'access-control-allow-credentials', 'cache-control', 'application','cross-origin-resource-policy', 'permissions-policy', 'x-content-type-options'])) {
+foreach ($responseHeaders as $key => $value) {
+    if (in_array($key, [
+        'content-type',
+        'content-length',
+        'vary',
+        'access-control-allow-origin',
+        'access-control-allow-credentials',
+        'cache-control',
+        'application',
+        'cross-origin-resource-policy',
+        'permissions-policy',
+        'x-content-type-options'
+    ])) {
         header($key . ': ' . $value);
     }
 }
