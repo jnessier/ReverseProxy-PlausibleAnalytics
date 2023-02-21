@@ -10,7 +10,12 @@
 
 require_once 'options.php';
 
-$requestUri = str_replace($relativeUri, '', $_SERVER['REQUEST_URI']);
+$requestUri = $_SERVER['REQUEST_URI'];
+$position = strpos($requestUri, $relativeUri);
+if ($position === 0) {
+    $requestUri = substr($requestUri, strlen($relativeUri));
+}
+
 $requestUriPath = parse_url($requestUri, PHP_URL_PATH);
 
 $code = 404;
