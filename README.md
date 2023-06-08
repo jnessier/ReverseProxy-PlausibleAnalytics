@@ -4,7 +4,7 @@ Written in PHP for shared hosting on Apache.
 
 ## Installation
 
-gmg   from [here](https://github.com/Neoflow/ReverseProxy-PlausibleAnalytics/releases/).
+1. Manually download the latest release from [here](https://github.com/Neoflow/ReverseProxy-PlausibleAnalytics/releases/).
 
 ### Running in the root of a domain or subdomain
 
