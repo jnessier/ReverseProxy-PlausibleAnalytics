@@ -59,7 +59,7 @@ $backendUrl = "https://plausible.io";
 
 ## Contributors
 
-* Jonathan Nessier, [Neoflow](https://www.neoflow.ch)
+* Jonathan Nessier
 * David Mondok
 * Julien Tessier, [Utile](https://www.utile.co)
 
